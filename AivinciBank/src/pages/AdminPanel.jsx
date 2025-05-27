@@ -3,7 +3,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ResponsiveContainer, PieChart, Pie, Cell
 } from 'recharts';
-import { FaChartLine, FaExchangeAlt } from 'react-icons/fa';
+import { FaChartLine, FaExchangeAlt,FaUserEdit } from 'react-icons/fa';
 import { FiMenu } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
@@ -33,11 +33,12 @@ const Sidebar = ({ onSelectSection, onDeleteClick, onSignOutClick }) => (
   <div className="bg-[#15182c] h-screen w-64 p-5 flex flex-col text-white fixed">
     <div className="text-xl font-bold mb-8 flex items-center gap-2">
       <FiMenu />
-      Admin Panel
+      Profile
     </div>
     <nav className="flex flex-col gap-6">
-      <button onClick={() => onSelectSection("info")} className="text-left hover:text-blue-400">Info</button>
+      <button onClick={() => onSelectSection("info")} className="text-left hover:text-blue-400">Information</button>
       <button onClick={() => onSelectSection("transfer")} className="text-left hover:text-blue-400">Transfer</button>
+      <button onClick={() => onSelectSection("update")} className="text-left hover:text-blue-400">Update Info</button>
       <button onClick={onDeleteClick} className="text-left hover:text-red-500">Delete Account</button>
       <button onClick={onSignOutClick} className="text-left hover:text-yellow-400">Sign Out</button>
     </nav>
@@ -194,6 +195,109 @@ const TransferForm = () => {
     </Card>
   );
 };
+const UpdateInfo = () => {
+  const [name] = useState("Gulshan");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
+
+  const isEmailValid = email.includes("@") && email.includes(".");
+  const isPasswordValid = password.length >= 6;
+  const doPasswordsMatch = password === confirmPassword;
+
+  const isFormValid =
+    isEmailValid && isPasswordValid && doPasswordsMatch;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!isFormValid) {
+      setMessage("Please fill out all fields correctly.");
+      return;
+    }
+    setMessage("✅ Profile updated successfully!");
+  };
+
+  return (
+    <div className="bg-[#1e1e2f] text-white rounded-2xl shadow-md p-6 max-w-md mx-auto">
+      <h2 className="text-xl font-semibold mb-6">Update Profile Info</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block mb-1 font-medium">Name :</label>
+          <input
+            type="text"
+            value={name}
+            disabled
+            className="w-full p-2 rounded text-black bg-gray-300 cursor-not-allowed"
+          />
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Email:</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 rounded text-black"
+            placeholder="Enter your email"
+          />
+          {!isEmailValid && email && (
+            <p className="text-red-500 text-sm mt-1">Invalid email address</p>
+          )}
+        </div>
+
+       
+
+        <div>
+          <label className="block mb-1 font-medium">New Password:</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 rounded text-black"
+            placeholder="Enter new password (min 6 chars)"
+          />
+          {!isPasswordValid && password && (
+            <p className="text-red-500 text-sm mt-1">
+              Password must be at least 6 characters
+            </p>
+          )}
+        </div>
+
+        <div>
+          <label className="block mb-1 font-medium">Confirm Password:</label>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className="w-full p-2 rounded text-black"
+            placeholder="Confirm new password"
+          />
+          {!doPasswordsMatch && confirmPassword && (
+            <p className="text-red-500 text-sm mt-1">Passwords do not match</p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={!isFormValid}
+          className={`w-full py-2 rounded font-semibold transition ${
+            isFormValid
+              ? "bg-blue-600 hover:bg-blue-700"
+              : "bg-gray-400 cursor-not-allowed"
+          }`}
+        >
+          Update Profile
+        </button>
+      </form>
+
+      {message && (
+        <p className="mt-4 text-center font-semibold text-green-400">{message}</p>
+      )}
+    </div>
+  );
+};
 
 
 const AdminPanel = () => {
@@ -245,7 +349,7 @@ const AdminPanel = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-              <Card title="Ödənişlər və Gəlirlər" icon={<FaChartLine />}>
+              <Card title="İncome and Expense" icon={<FaChartLine />}>
                 <ResponsiveContainer width="100%" height={250}>
                   <LineChart data={[monthData]}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#333" />
@@ -259,7 +363,7 @@ const AdminPanel = () => {
                 </ResponsiveContainer>
               </Card>
 
-              <Card title="Pie Chart: Faizlə" icon={<FaChartLine />}>
+              <Card title="Pie Chart" icon={<FaChartLine />}>
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie data={[
@@ -279,6 +383,9 @@ const AdminPanel = () => {
         )}
 
         {selectedSection === 'transfer' && <TransferForm />}
+        {selectedSection === 'update' && <UpdateInfo />}
+       
+
       </div>
 
       {showDeleteModal && (
