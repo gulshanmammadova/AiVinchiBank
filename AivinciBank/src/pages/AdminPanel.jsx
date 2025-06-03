@@ -39,7 +39,6 @@ const Sidebar = ({ onSelectSection, onDeleteClick, onSignOutClick }) => (
       <button onClick={() => onSelectSection("info")} className="text-left hover:text-blue-400">Information</button>
       <button onClick={() => onSelectSection("transfer")} className="text-left hover:text-blue-400">Transfer</button>
       <button onClick={() => onSelectSection("update")} className="text-left hover:text-blue-400">Update Info</button>
-      <button onClick={onDeleteClick} className="text-left hover:text-red-500">Delete Account</button>
       <button onClick={onSignOutClick} className="text-left hover:text-yellow-400">Sign Out</button>
     </nav>
   </div>
@@ -198,7 +197,6 @@ const TransferForm = () => {
 const UpdateInfo = () => {
   const [name] = useState("Gulshan");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -312,6 +310,8 @@ const AdminPanel = () => {
   const handleDelete = () => {
     console.log("Account deleted.");
     setShowDeleteModal(false);
+    navigate("/");
+
   };
 
   const handleSignOut = () => {
@@ -326,7 +326,6 @@ const AdminPanel = () => {
     <div className="flex bg-[#0f0f1a] min-h-screen">
       <Sidebar
         onSelectSection={setSelectedSection}
-        onDeleteClick={() => setShowDeleteModal(true)}
         onSignOutClick={() => setShowSignOutModal(true)}
       />
       <div className="ml-64 w-full p-8 space-y-12">
@@ -388,14 +387,7 @@ const AdminPanel = () => {
 
       </div>
 
-      {showDeleteModal && (
-        <Modal
-          title="Confirm Deletion"
-          message="Are you sure you want to delete your account?"
-          onConfirm={handleDelete}
-          onCancel={() => setShowDeleteModal(false)}
-        />
-      )}
+   
 
       {showSignOutModal && (
         <Modal
